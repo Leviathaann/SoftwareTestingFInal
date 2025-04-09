@@ -60,7 +60,7 @@ public class ScreenshotListener implements ITestListener {
     }
 
 
-    // logs when test suite starts and finishes
+    // reports when test suite starts and finishes, this makes it easier to track the test suite execution
     @Override
     public void onStart(ITestContext context) {
         Reporter.log("Test Suite Started: " + context.getName() + "<br>");
@@ -69,5 +69,21 @@ public class ScreenshotListener implements ITestListener {
     @Override
     public void onFinish(ITestContext context) {
         Reporter.log("Test Suite Finished: " + context.getName() + "<br>");
+    }
+
+    // reports when a test starts, passes or fails
+    @Override
+    public void onTestStart(ITestResult result) {
+        Reporter.log("Test Started: " + result.getName() + "<br>");
+    }
+
+    @Override
+    public void onTestSuccess(ITestResult result) {
+        Reporter.log("Test Passed: " + result.getName() + "<br>");
+    }
+
+    @Override
+    public void onTestSkipped(ITestResult result) {
+        Reporter.log("Test Skipped: " + result.getName() + "<br>");
     }
 }
