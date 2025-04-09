@@ -1,0 +1,15 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="Sales Force Contact From Suite" verbose="1" >
+    <listeners>
+        <listener class-name="org.salesForceTesting.testUtils.ScreenshotListener"/>
+    </listeners>
+
+    <test name="Contact Form Tests">
+        <classes>
+            <class name="org.salesForceTesting.tests.ContactFormPageTest"/>
+        </classes>
+    </test>
+
+
+</suite>
