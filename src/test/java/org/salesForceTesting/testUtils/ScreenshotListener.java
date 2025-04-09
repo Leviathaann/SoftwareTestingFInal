@@ -18,19 +18,8 @@ import java.util.Date;
 public class ScreenshotListener implements ITestListener {
 
     @Override
-    public void onTestStart(ITestResult result) {
-        // Can add logging here if needed
-    }
-
-    @Override
-    public void onTestSuccess(ITestResult result) {
-        // Can add logging here if needed
-    }
-
-    @Override
     public void onTestFailure(ITestResult result) {
-        Reporter.log("Test Failed: " + result.getName()); // Log failure
-        // Get the WebDriver instance from the BaseTest
+        Reporter.log("Test Failed: " + result.getName());
         Object testInstance = result.getInstance();
         WebDriver driver = null;
         if (testInstance instanceof BaseTestCore) {
@@ -41,24 +30,23 @@ public class ScreenshotListener implements ITestListener {
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             String testMethodName = result.getMethod().getMethodName();
             String screenshotName = testMethodName + "_" + timestamp + ".png";
-            // Define path relative to project root -> test-output/screenshots
             String screenshotDir = "test-output" + File.separator + "screenshots";
             String screenshotPath = screenshotDir + File.separator + screenshotName;
 
             try {
-                // Ensure directory exists
+
+                /*
+                 * Create the directory if it doesn't exist already
+                 * The screenshots will be saved in the /src/screenshots directory
+                 */
                 File directory = new File(screenshotDir);
                 if (!directory.exists()) {
-                    directory.mkdirs(); // Create parent directories if needed
+                    directory.mkdirs();
                 }
 
                 // Take screenshot
                 File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-                // Copy screenshot to desired location
                 FileUtils.copyFile(scrFile, new File(screenshotPath));
-
-                // Log the path to the TestNG report (with a clickable link)
-                // Relative path from the report (index.html is in test-output)
                 String relativePath = "screenshots" + File.separator + screenshotName;
                 Reporter.log("Screenshot captured: <a href='" + relativePath + "'> " + screenshotName + "</a><br>");
 
@@ -71,25 +59,15 @@ public class ScreenshotListener implements ITestListener {
         }
     }
 
-    @Override
-    public void onTestSkipped(ITestResult result) {
-        // Can add logging here if needed
-    }
 
-    @Override
-    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-        // Usually ignored, but can implement if needed
-    }
-
+    // logs when test suite starts and finishes
     @Override
     public void onStart(ITestContext context) {
-        // Called before test suite starts
         Reporter.log("Test Suite Started: " + context.getName() + "<br>");
     }
 
     @Override
     public void onFinish(ITestContext context) {
-        // Called after test suite finishes
         Reporter.log("Test Suite Finished: " + context.getName() + "<br>");
     }
 }

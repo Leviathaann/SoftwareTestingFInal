@@ -24,7 +24,7 @@ public class BaseTestCore {
             WebDriverManager.chromedriver().setup();
             driver = new ChromeDriver();
             driver.manage().window().maximize();
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10)); // Increased implicit wait slightly
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         }
 
         @AfterMethod
