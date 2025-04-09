@@ -10,16 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CsvProvider {
-    // CSV file path with Delimiter
-    private final static String CSV_FILE_PATH = "src/test/resources/testData.csv";
     private final static char DELIMITER = ',';
-
 
     @DataProvider(name = "SalesForceContactForm")
     public static Object[][] getSfContactFormData() {
         try {
-            String csvFilePath = "src/test/resources/testdata/contact_form_data.csv";
 
+            String csvFilePath = "src/test/resources/ContactFormData.csv";
             Reader in = new FileReader(csvFilePath);
             Iterable<CSVRecord> fields = CSVFormat.DEFAULT.withDelimiter(DELIMITER).withFirstRecordAsHeader()
                     .withIgnoreHeaderCase().withTrim().parse(in);
