@@ -9,10 +9,10 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CsvProvider {
+public class ContactFormDataProvider {
     private final static char DELIMITER = ',';
 
-    @DataProvider(name = "SalesForceContactForm")
+    @DataProvider(name = "ContactFormData")
     public static Object[][] getSfContactFormData() {
         try {
 
@@ -35,9 +35,10 @@ public class CsvProvider {
                 String phone = field.get("phone").isEmpty() ? null : field.get("phone");
                 String productInterest = field.get("productInterest").isEmpty() ? null : field.get("productInterest");
                 String country = field.get("country").isEmpty() ? null : field.get("country");
+                String state = field.get("state").isEmpty() ? null : field.get("state");
                 String expectedResult = field.get("expectedResult");
 
-                Object[] data = {testCaseId, firstName, lastName, jobTitle, email, company, employeesNumber, phone, productInterest, country, expectedResult};
+                Object[] data = {testCaseId, firstName, lastName, jobTitle, email, company, employeesNumber, phone, productInterest, country, state, expectedResult};
                 testData.add(data);
             }
 

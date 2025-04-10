@@ -1,0 +1,6 @@
+testCaseId,firstName,lastName,jobTitle,email,company,employeesNumber,phone,productInterest,country,state,expectedResult
+SF_FORM_001,John,Doe,Software Engineer,john.doe@example.com,Acme Corp,21 - 200 employees,5551234567,Artificial Intelligence,United States,Alabama,SUCCESS
+SF_FORM_002,,Doe,Software Engineer,john.doe@example.com,Acme Corp,21 - 200 employees,5551234567,Artificial Intelligence,Togo,,FIRST_NAME_ERROR
+SF_FORM_003,John,,Software Engineer,john.doe@example.com,Acme Corp,21 - 200 employees,5551234567,Artificial Intelligence,United Kingdom,,LAST_NAME_ERROR
+SF_FORM_004,John,Doe,Software Engineer,invalid-email,Acme Corp,21 - 200 employees,5551234567,Artificial Intelligence,United States,California,EMAIL_ERROR
+SF_FORM_005,John,Doe,Software Engineer,john.doe@example.com,,21 - 200 employees,5551234567,Artificial Intelligence,United States,Texas,COMPANY_ERROR

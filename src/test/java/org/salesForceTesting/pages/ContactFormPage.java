@@ -1,10 +1,10 @@
 package org.salesForceTesting.pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 
 import java.time.Duration;
 
@@ -24,32 +24,33 @@ public class ContactFormPage {
     private String contactPageUrl = "https://www.salesforce.com/form/contact/contactme/";
 
     // Locators for the contact form fields
-    private By firstNameField = By.id("UserFirstName-Zsel");
-    private By lastNameField = By.id("UserLastName-QTwS");
-    private By jobTitleField = By.id("UserTitle-bLge");
-    private By emailField = By.id("UserEmail-6neN");
-    private By companyField = By.id("CompanyName-re4G");
-    private By employeesDropdown = By.id("CompanyEmployees-KlMS");
-    private By phoneField = By.id("UserPhone-GULU");
-    private By productInterestDropdown = By.id("Lead.Primary_Product_Interest__c-eMcH");
-    private By countryDropdown = By.id("CompanyCountry-4rfj");
-    private By submitButton = By.xpath("//button[@name='contact me' and @type='submit' and contains(@class, 'submit')]");
+    private By firstNameField = By.name("UserFirstName");
+    private By lastNameField = By.name("UserLastName");
+    private By jobTitleField = By.name("UserTitle");
+    private By emailField = By.name("UserEmail");
+    private By companyField = By.name("CompanyName");
+    private By employeesDropdown = By.name("CompanyEmployees");
+    private By phoneField = By.name("UserPhone");
+    private By productInterestDropdown = By.name("Lead.Primary_Product_Interest__c");
+    private By countryDropdown = By.name("CompanyCountry");
+    private By stateField = By.name("CompanyState");
+    private By submitButton = By.name("contact me");
 
     // All locators for the error messages
-    private By firstNameError = By.id("UserFirstName-Zsel-errMsg");
-    private By lastNameError = By.id("UserLastName-QTwS-errMsg");
-    private By jobTitleError = By.id("UserTitle-wZst-errMsg");
-    private By emailError = By.id("UserEmail-6neN-errMsg");
-    private By companyError = By.id("CompanyName-re4G-errMsg");
-    private By employeesError = By.id("CompanyEmployees-KlMS-errMsg");
-    private By phoneError = By.id("UserPhone-GULU-errMsg");
-    private By productInterestError = By.id("Lead.Primary_Product_Interest__c-eMcH-errMsg");
-    private By countryError = By.id("CompanyCountry-4rfj-errMsg");
-    private By submitButtonError = By.xpath("//button[@name='contact me' and @type='submit' and contains(@class, 'submit') and @aria-invalid='true']");
+    // Updated locators for error messages
+    private By firstNameError = By.xpath("//input[@name='UserFirstName']/following-sibling::span[@class='error-msg']");
+    private By lastNameError = By.xpath("//input[@name='UserLastName']/following-sibling::span[@class='error-msg']");
+    private By jobTitleError = By.xpath("//input[@name='UserTitle']/following-sibling::span[@class='error-msg']");
+    private By emailError = By.xpath("//input[@name='UserEmail']/following-sibling::span[@class='error-msg']");
+    private By companyError = By.xpath("//input[@name='CompanyName']/following-sibling::span[@class='error-msg']");
+    private By employeesError = By.xpath("//select[@name='CompanyEmployees']/following-sibling::span[@class='error-msg']");
+    private By phoneError = By.xpath("//input[@name='UserPhone']/following-sibling::span[@class='error-msg']");
+    private By productInterestError = By.xpath("//select[@name='Lead.Primary_Product_Interest__c']/following-sibling::span[@class='error-msg']");
+    private By countryError = By.xpath("//select[@name='CompanyCountry']/following-sibling::span[@class='error-msg']");
 
 
     // Locator for the success message
-    private By successMessage = By.xpath("");
+    private By successMessage = By.id("thank-you-well-be-in-touch-soon");
 
     // Constructor
     public ContactFormPage(WebDriver driver) {
@@ -58,7 +59,7 @@ public class ContactFormPage {
     }
 
     // go to the contact form page
-    public void navigateToContactFormPage() {
+    public void navigateToContactPage() {
         driver.get(contactPageUrl);
     }
 
@@ -67,6 +68,8 @@ public class ContactFormPage {
         * If the input is null, the method will not fill in the field.
         * This is to prevent null pointer exceptions and to ensure that the form is filled out correctly.
      */
+
+
 
     public void setFirstName(String firstName) {
         // Check if the first name is null or empty
@@ -152,24 +155,89 @@ public class ContactFormPage {
         }
     }
 
+    public void selectState(String state) {
+        if (state != null && !state.isEmpty()) {
+            try {
+                // Wait for the state dropdown element to be present and clickable
+                WebElement stateElement = wait.until(ExpectedConditions.elementToBeClickable(stateField));
+
+                // Check if it's actually a select element before proceeding
+                if (!"select".equalsIgnoreCase(stateElement.getTagName())) {
+                    System.err.println("State field (name=" + stateField + ") is not a <select> element. Found: <" +
+                            stateElement.getTagName() + ">. Cannot select state: " + state);
+                    Assert.fail("State field is not a dropdown. Cannot select state: " + state);
+                    return;
+                }
+
+                Select stateDropdown = new Select(stateElement);
+                stateDropdown.selectByVisibleText(state);
+                System.out.println("Selected state: " + state); // Log success
+            } catch (TimeoutException e) {
+                System.err.println("State dropdown (name=" + stateField + ") did not become clickable: " + e.getMessage());
+                Assert.fail("State dropdown failed to load or become interactable for state: " + state, e);
+            } catch (NoSuchElementException e) {
+                System.err.println(
+                        "State option '" + state + "' not found in dropdown (name=" + stateField + "): " + e.getMessage());
+                Assert.fail("State option '" + state + "' not found.", e);
+            } catch (Exception e) {
+                System.err.println("Error selecting state '" + state + "' (name=" + stateField + "): " + e.getMessage());
+                Assert.fail("Failed to select state: " + state, e);
+            }
+        } else if (state != null) {
+            System.out.println("State value provided is empty string, skipping selection.");
+        }
+    }
+
     // filling out the form
-    public void fillOutForm(String firstName, String lastName, String email, String company, String phone,
-                            String jobTitle, String employees, String productInterest, String country) {
+    public void fillOutForm(
+            String firstName,
+            String lastName,
+            String email,
+            String company,
+            String phone,
+            String jobTitle,
+            String employees,
+            String productInterest,
+            String country,
+            String state
+    ) {
         setFirstName(firstName);
         setLastName(lastName);
+        setJobTitle(jobTitle);
         setEmail(email);
         setCompany(company);
-        setPhone(phone);
-        setJobTitle(jobTitle);
         setEmployees(employees);
+        setPhone(phone);
         setProductInterest(productInterest);
         setCountry(country);
+
+        if (state != null && !state.isEmpty()) {
+            try {
+                wait.until(ExpectedConditions.presenceOfElementLocated(stateField));
+                selectState(state);
+            } catch (TimeoutException e) {
+                System.err.println(
+                        "State field (name=" + stateField + ") did not become present after setting country. " +
+                                "Cannot set state: " + state);
+                if (country != null && (country.equals("United States") || country.equals("Canada"))) { // Example check
+                    Assert.fail("State field required for country '" + country + "' did not appear.", e);
+                }
+            }
+        } else {
+            System.out.println("No valid state provided or state not required, skipping state selection.");
+        }
     }
 
     // Submit the form
     public void submitForm() {
-        WebElement element = driver.findElement(submitButton);
-        element.click();
+        try {
+            wait.until(ExpectedConditions.elementToBeClickable(submitButton))
+                    .click();
+        } catch (Exception e) {
+            System.err.println("Could not click submit button: " + e.getMessage());
+            // Fallback or re-throw if needed
+            driver.findElement(submitButton).click();
+        }
     }
 
     /* Check for error messages
@@ -260,14 +328,6 @@ public class ContactFormPage {
         }
     }
 
-    public boolean isSubmitButtonErrorDisplayed() {
-        try{
-            WebElement element = driver.findElement(submitButtonError);
-            return element.isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
-    }
 
     // Get error messages (applies to all fillable fields)
     public String getFirstNameErrorMessage() {
@@ -303,6 +363,14 @@ public class ContactFormPage {
             return element.getText();
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    public boolean isStateFieldVisible() {
+        try {
+            return driver.findElement(stateField).isDisplayed();
+        } catch (Exception e) {
+            return false;
         }
     }
 
@@ -350,15 +418,31 @@ public class ContactFormPage {
         }
     }
 
-    public String getSubmitButtonErrorMessage() {
-        try{
-            WebElement element = driver.findElement(submitButtonError);
-            return element.getText();
-        } catch (Exception e) {
-            return null;
+    public boolean isSuccessMessageDisplayed() {
+        try {
+            // Wait for the success message element to be visible
+            wait.until(ExpectedConditions.visibilityOfElementLocated(successMessage));
+            return true; // Element is visible
+        } catch (TimeoutException | NoSuchElementException e) {
+            // Element not found or not visible within the timeout period
+            return false;
         }
     }
 
+    public String getSuccessMessageText() {
+        try {
+            // Wait for the element to be visible and get its text
+            WebElement successElement = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(successMessage)
+            );
+            // Get text from the inner span for cleaner text
+            WebElement innerSpan = successElement.findElement(By.tagName("span"));
+            return innerSpan.getText().trim();
+        } catch (TimeoutException | NoSuchElementException e) {
+            // Element not found or not visible within the timeout period
+            return null;
+        }
+    }
 
 
 
