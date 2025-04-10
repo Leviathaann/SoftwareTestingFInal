@@ -15,13 +15,17 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
 public class ScreenshotListener implements ITestListener {
 
     @Override
     public void onTestFailure(ITestResult result) {
         Reporter.log("Test Failed: " + result.getName());
         Object testInstance = result.getInstance();
+
+        // flag to check if the driver is null
         WebDriver driver = null;
+
         if (testInstance instanceof BaseTestCore) {
             driver = ((BaseTestCore) testInstance).getDriver();
         }
@@ -45,13 +49,13 @@ public class ScreenshotListener implements ITestListener {
                 }
 
                 // Try to take screenshot and save it to the screenshot directory
-                File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-                FileUtils.copyFile(scrFile, new File(screenshotPath));
-                String relativePath = "screenshots" + File.separator + screenshotName;
-                Reporter.log("Screenshot captured: <a href='" + relativePath + "'> " + screenshotName + "</a><br>");
+                File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+                FileUtils.copyFile(screenshotFile, new File(screenshotPath));
+                String pathToScreenshot = "screenshots" + File.separator + screenshotName;
+                Reporter.log("Screenshot created: <a href='" + pathToScreenshot + "'> " + screenshotName + "</a><br>");
 
             } catch (IOException e) {
-                Reporter.log("Failed to capture a screenshot for " + testMethodName + ": " + e.getMessage());
+                Reporter.log("Failed to create a screenshot for " + testMethodName + ": " + e.getMessage());
                 e.printStackTrace();
             }
         } else {
@@ -60,7 +64,7 @@ public class ScreenshotListener implements ITestListener {
     }
 
 
-    // reports when test suite starts and finishes, this makes it easier to track the test suite execution
+    // reports when test suite starts and finishes
     @Override
     public void onStart(ITestContext context) {
         Reporter.log("Test Suite Started: " + context.getName() + "<br>");

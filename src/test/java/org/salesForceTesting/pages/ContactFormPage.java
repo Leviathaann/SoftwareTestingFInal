@@ -1,9 +1,13 @@
 package org.salesForceTesting.pages;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.ElementClickInterceptedException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.salesForceTesting.tests.BaseTestCore;
 import org.testng.Assert;
 
 import java.time.Duration;
@@ -15,7 +19,7 @@ import java.time.Duration;
  * all the methods to check for error messages
  */
 
-public class ContactFormPage {
+public class ContactFormPage extends BaseTestCore {
     // webdriver instance variables
     private WebDriver driver;
     private WebDriverWait wait;
@@ -47,7 +51,7 @@ public class ContactFormPage {
     private By phoneError = By.xpath("//input[@name='UserPhone']/following-sibling::span[@class='error-msg']");
     private By productInterestError = By.xpath("//select[@name='Lead.Primary_Product_Interest__c']/following-sibling::span[@class='error-msg']");
     private By countryError = By.xpath("//select[@name='CompanyCountry']/following-sibling::span[@class='error-msg']");
-
+    private By stateError = By.xpath("//select[@name='CompanyState']/following-sibling::span[@class='error-msg']");
 
     // Locator for the success message
     private By successMessage = By.id("thank-you-well-be-in-touch-soon");
@@ -58,18 +62,33 @@ public class ContactFormPage {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
-    // go to the contact form page
-    public void navigateToContactPage() {
-        driver.get(contactPageUrl);
+    private void handleAcceptCookies() {
+        try {
+            WebDriverWait cookieTimeWait = new WebDriverWait(driver, Duration.ofSeconds(5));
+            By acceptButtonLocator = By.id("onetrust-accept-btn-handler");
+
+            WebElement acceptButton = cookieTimeWait.until(ExpectedConditions.elementToBeClickable(acceptButtonLocator));
+            acceptButton.click();
+
+            cookieTimeWait.until(ExpectedConditions.invisibilityOfElementLocated(acceptButtonLocator));
+            System.out.println("'Accept All Cookies' button disappeared.");
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred while handling cookie consent: " + e.getMessage());
+        }
     }
 
-    /* Setters for the contact form fields (Actions)
+
+        // go to the contact form page
+    public void navigateToContactPage() {
+        driver.get(contactPageUrl);
+        // will call the handleAcceptCookies if the button is present
+        handleAcceptCookies();
+    }
+        /* Setters for the contact form fields (Actions)
         * These methods check if the input is null or empty before filling in the form.
         * If the input is null, the method will not fill in the field.
         * This is to prevent null pointer exceptions and to ensure that the form is filled out correctly.
      */
-
-
 
     public void setFirstName(String firstName) {
         // Check if the first name is null or empty
@@ -160,27 +179,18 @@ public class ContactFormPage {
             try {
                 // Wait for the state field to be clickable
                 WebElement stateElement = wait.until(ExpectedConditions.elementToBeClickable(stateField));
-
-                // Check if the state field is a dropdown
-                if (!"select".equalsIgnoreCase(stateElement.getTagName())) {
-                    System.err.println("State field (name=" + stateField + ") is not a dropdown. Found: <" + stateElement.getTagName() + ">. Cannot select state: " + state);
-                    Assert.fail("State field is not a dropdown. Cannot select state: " + state);
-                    return;
-                }
-
                 // Select the state
                 Select stateDropdown = new Select(stateElement);
                 stateDropdown.selectByVisibleText(state);
                 System.out.println("Selected state: " + state);
             } catch (TimeoutException e) {
                 System.err.println(
-                        "State dropdown (name=" + stateField + ") did not become clickable: " + e.getMessage());
-                Assert.fail("State dropdown failed to load or become interactable for state: " + state, e);
+                        "State dropdown did not show to click it: " + e.getMessage());
+                Assert.fail("State dropdown failed to load: " + state, e);
             } catch (NoSuchElementException e) {
                 System.err.println(
-                        "State option '" + state + "' not found in dropdown (name=" + stateField + "): "
-                                + e.getMessage());
-                Assert.fail("State option '" + state + "' not found.", e);
+                        "State option did not show up:" + e.getMessage());
+                Assert.fail("State option did not show up: " + state, e);
             }
         } else if (state != null) {
             System.out.println("State value is null, skipping to the submit button.");
@@ -208,13 +218,13 @@ public class ContactFormPage {
                 selectState(state);
             } catch (TimeoutException e) {
                 System.err.println(
-                        "State field name=" + stateField + " did not show up after setting the country. " +  "Can't set state: " + state);
-                if (country != null && country.equals("United States")) { 
-                    Assert.fail("State field is required for the United States " + e);
+                        "State field " + stateField + " did not show up after setting the country. " +  "Cant set state: " + state);
+                if (country != null && (country.equals("United States") || country.equals("Canada") || country.equals("Australia"))) { 
+                    Assert.fail("The State field is required for the United States, Canada and Australia" + e);
                 }
             }
         } else {
-            System.out.println("No valid state provided or state not required, skipping state selection.");
+            System.out.println("There was no state provided or it was not required, skipping this selection.");
         }
     }
 
@@ -318,6 +328,14 @@ public class ContactFormPage {
         }
     }
 
+    public boolean isStateErrorDisplayed() {
+        try{
+            WebElement element = driver.findElement(stateError);
+            return element.isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     // Get error messages (applies to all fillable fields)
     public String getFirstNameErrorMessage() {

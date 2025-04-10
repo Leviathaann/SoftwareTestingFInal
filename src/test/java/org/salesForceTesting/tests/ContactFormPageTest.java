@@ -45,8 +45,7 @@ public class ContactFormPageTest extends BaseTestCore {
         System.out.println("Executing test case: " + testCaseId);
 
         // Fill the form with the provided data from the CSV
-        contactFormPage.fillOutForm(firstName, lastName, email, company, phone,
-                jobTitle, employeesNumber, productInterest, country, state);
+        contactFormPage.fillOutForm(firstName, lastName, email, company, phone, jobTitle, employeesNumber, productInterest, country, state);
 
         // Submit the form
         contactFormPage.submitForm();
@@ -54,68 +53,56 @@ public class ContactFormPageTest extends BaseTestCore {
         // This will go through the expected results and check if the form is displayed correctly
         switch (expectedResult) {
             case "SUCCESS":
-                Assert.assertTrue(
-                        contactFormPage.isSuccessMessageDisplayed(), "Success message should be displayed for test case: " + testCaseId);
+                Assert.assertTrue(contactFormPage.isSuccessMessageDisplayed(), "Success message should be displayed: " + testCaseId);
                 String successText = contactFormPage.getSuccessMessageText();
-                Assert.assertNotNull(successText, "Success message text should not be null for test case: " + testCaseId);
-                Assert.assertEquals(successText, "Thank you. We'll be in touch soon.", "Success message text is incorrect for test case: " + testCaseId
-                );
+                Assert.assertNotNull(successText, "Success message text should not be null: " + testCaseId);
+                Assert.assertEquals(successText, "Thank you. We'll be in touch soon.", "message of success is wrong: " + testCaseId);
                 break;
 
             case "FIRST_NAME_ERROR":
-                Assert.assertTrue(contactFormPage.isFirstNameErrorDisplayed(),
-                        "First name error should be displayed for test case: " + testCaseId);
+                Assert.assertTrue(contactFormPage.isFirstNameErrorDisplayed(), "First name error should be displayed: " + testCaseId);
                 String firstNameError = contactFormPage.getFirstNameErrorMessage();
-                Assert.assertEquals(firstNameError, "Enter your first name",
-                        "First name error message is incorrect for test case: " + testCaseId);
+                Assert.assertEquals(firstNameError, "Enter your first name","First name error message is not right: " + testCaseId);
                 break;
 
             case "LAST_NAME_ERROR":
-                Assert.assertTrue(contactFormPage.isLastNameErrorDisplayed(),
-                        "Last name error should be displayed for test case: " + testCaseId);
+                Assert.assertTrue(contactFormPage.isLastNameErrorDisplayed(), "Last name error should be displayed: " + testCaseId);
                 String lastNameError = contactFormPage.getLastNameErrorMessage();
-                Assert.assertEquals(lastNameError, "Enter your last name",
-                        "Last name error message is incorrect for test case: " + testCaseId);
+                Assert.assertEquals(lastNameError, "Enter your last name","Last name error message is not right: " + testCaseId);
                 break;
 
             case "JOB_TITLE_ERROR":
-                Assert.assertTrue(contactFormPage.isJobTitleErrorDisplayed(),
-                        "Job title error should be displayed for test case: " + testCaseId);
+                Assert.assertTrue(contactFormPage.isJobTitleErrorDisplayed(), "Job title error should be displayed: " + testCaseId);
                 break;
 
             case "EMAIL_ERROR":
-                Assert.assertTrue(contactFormPage.isEmailErrorDisplayed(),
-                        "Email error should be displayed for test case: " + testCaseId);
+                Assert.assertTrue(contactFormPage.isEmailErrorDisplayed(),"Email error should be displayed: " + testCaseId);
                 String emailError = contactFormPage.getEmailErrorMessage();
-                Assert.assertTrue(emailError.contains("valid") || emailError.contains("email"),
-                        "Email error should mention valid email format for test case: " + testCaseId);
+                Assert.assertTrue(emailError.contains("valid") || emailError.contains("email"),"Email error should mention valid email format: " + testCaseId);
                 break;
 
             case "COMPANY_ERROR":
-                Assert.assertTrue(contactFormPage.isCompanyErrorDisplayed(),
-                        "Company error should be displayed for test case: " + testCaseId);
+                Assert.assertTrue(contactFormPage.isCompanyErrorDisplayed(), "Company error should be displayed: " + testCaseId);
                 break;
 
             case "EMPLOYEES_ERROR":
-                Assert.assertTrue(contactFormPage.isEmployeesErrorDisplayed(),
-                        "Employees number error should be displayed for test case: " + testCaseId);
+                Assert.assertTrue(contactFormPage.isEmployeesErrorDisplayed(), "Employees number error should be displayed: " + testCaseId);
                 break;
 
             case "PHONE_ERROR":
-                Assert.assertTrue(contactFormPage.isPhoneErrorDisplayed(),
-                        "Phone error should be displayed for test case: " + testCaseId);
+                Assert.assertTrue(contactFormPage.isPhoneErrorDisplayed(), "Phone error should be displayed: " + testCaseId);
                 break;
 
             case "PRODUCT_INTEREST_ERROR":
-                Assert.assertTrue(contactFormPage.isProductInterestErrorDisplayed(),
-                        "Product interest error should be displayed for test case: " + testCaseId);
+                Assert.assertTrue(contactFormPage.isProductInterestErrorDisplayed(), "Product interest error should be displayed: " + testCaseId); 
                 break;
 
             case "COUNTRY_ERROR":
-                Assert.assertTrue(contactFormPage.isCountryErrorDisplayed(),
-                        "Country error should be displayed for test case: " + testCaseId);
+                Assert.assertTrue(contactFormPage.isCountryErrorDisplayed(), "Country error should be displayed: " + testCaseId);
                 break;
-
+            case "STATE_ERROR":
+                Assert.assertTrue(contactFormPage.isStateErrorDisplayed(), "State error should be displayed: " + testCaseId);
+                break;
             default:
                 Assert.fail("Unknown expected result: " + expectedResult + " for test case: " + testCaseId);
         }
@@ -183,7 +170,7 @@ public class ContactFormPageTest extends BaseTestCore {
             contactFormPage.setPhone("07124045248");
             contactFormPage.setProductInterest("Team Productivity");
             if (contactFormPage.isStateFieldVisible()) {
-                contactFormPage.selectState("Boston");
+                contactFormPage.selectState("Massachusetts");
             }
             // Submit the form
             contactFormPage.submitForm();
@@ -235,24 +222,56 @@ public class ContactFormPageTest extends BaseTestCore {
             // submit form
             contactFormPage.submitForm();
 
-            // Verify phone error is displayed
+            // Check if the phone error is displayed
             Assert.assertTrue(contactFormPage.isPhoneErrorDisplayed(),
                     "Phone error should be displayed for invalid format: " + invalidPhone);
 
-            // Verify error message mentions valid phone or format
             String errorMessage = contactFormPage.getPhoneErrorMessage();
-            Assert.assertTrue(
-                    errorMessage != null && (errorMessage.contains("phone") || errorMessage.contains("number")
-                            || errorMessage.contains("format")), "Phone error message should mention valid format for: " +
-                            invalidPhone + " but got message: " + errorMessage);
 
-            System.out.println("Successfully validated error for phone format: " + invalidPhone);
+            // Check if the error message contains the word "phone" or "format"
+            Assert.assertTrue(errorMessage != null && (errorMessage.contains("phone")|| errorMessage.contains("format")), "Phone error message should contain the word 'phone' or 'format': " +
+            invalidPhone + " but got the message: " + errorMessage);
         }
     }
 
-    // Test case for employee dropdown validation
+    /* Test case for employee dropdown validation
+    * The options avaiable in the dropdown menu are:
+    * 1 - 20 employees
+    * 21 - 200 employees
+    * 201 - 10,000 employees
+    * 10,001+ employees
+    */
 
-   
 
+    @Test
+    public void testInvalidEmployeeDropdown() {
+            // go to the contact page
+            contactFormPage.navigateToContactPage();
+
+            contactFormPage.setFirstName("prime");
+            contactFormPage.setLastName("agen");
+            contactFormPage.setJobTitle("Software Engineer");
+            contactFormPage.setEmail("primeagen@gmail.com");
+            contactFormPage.setCompany("Netflix");
+            contactFormPage.setPhone("04912492491");
+            contactFormPage.setProductInterest("Commerce Platform");
+            contactFormPage.setCountry("United States");
+            if (contactFormPage.isStateFieldVisible()) {
+                contactFormPage.selectState("Montana");
+            }
+
+            // submit form
+            contactFormPage.submitForm();
+
+            // Check if the employee error is displayed
+            Assert.assertTrue(contactFormPage.isEmployeesErrorDisplayed(), "Error message should be dispalyed when no option is selected from the employee dropdown");
+
+            // Get the error message
+            String errorMessage = contactFormPage.getEmployeesErrorMessage();
+
+            // Check if the error message contains the word "employee"
+            Assert.assertTrue(errorMessage != null && errorMessage.contains("employee") && errorMessage.contains("number"), "Error message have the word 'employee' and 'number' in it': " + errorMessage);
+
+        }
 
 }

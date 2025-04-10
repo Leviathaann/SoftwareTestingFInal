@@ -1,6 +1,9 @@
 testCaseId,firstName,lastName,jobTitle,email,company,employeesNumber,phone,productInterest,country,state,expectedResult
-SF_FORM_001,John,Doe,Software Engineer,john.doe@example.com,Acme Corp,21 - 200 employees,5551234567,Artificial Intelligence,United States,Alabama,SUCCESS
-SF_FORM_002,,Doe,Software Engineer,john.doe@example.com,Acme Corp,21 - 200 employees,5551234567,Artificial Intelligence,Togo,,FIRST_NAME_ERROR
-SF_FORM_003,John,,Software Engineer,john.doe@example.com,Acme Corp,21 - 200 employees,5551234567,Artificial Intelligence,United Kingdom,,LAST_NAME_ERROR
-SF_FORM_004,John,Doe,Software Engineer,invalid-email,Acme Corp,21 - 200 employees,5551234567,Artificial Intelligence,United States,California,EMAIL_ERROR
-SF_FORM_005,John,Doe,Software Engineer,john.doe@example.com,,21 - 200 employees,5551234567,Artificial Intelligence,United States,Texas,COMPANY_ERROR
+SF_FORM_001,Jack,Ellis,Software Engineer,jackellis@libertyit.com,Liberty IT,21 - 200 employees,9503854243,Integration Software,United States,Alabama,SUCCESS
+SF_FORM_002,,Smith,QA Engineer,ryansmith@netflix.com,Netflix,1 - 20 employees,042-555-0123,Marketing Technology,Togo,,FIRST_NAME_ERROR
+SF_FORM_003,Jennison,,Scrum Master,jenenisonWilliam@salesforce.com,Salesforce,21 - 200 employees,092-555-0123,Sales Force Automation and CRM,United Kingdom,,LAST_NAME_ERROR
+SF_FORM_004,Chuck,Bartowski,Nerd Herder,nerdherder@buy-more..com,Buy More,21 - 200 employees,592-555-0123,Marketing Technology,United States,California,EMAIL_ERROR
+SF_FORM_005,Sarah,Janson,Jr Software Engineer,sarahjanson@microsoft.com,Microsoft,21 - 200 employees,(123),Net Zero Software,United States,Texas,PHONE_ERROR
+SF_FORM_006,Walter,White,QA Engineer,walterwhite@google.com,Google,,9503854243,Success Plans,United States,Texas,EMPLOYEES_ERROR
+SF_FORM_007,Barry,Allen,Product Manager,barryallen@starlabs.com,Star Labs,21 - 200 employees,9503854243,,United States,Texas,PRODUCT_INTEREST_ERROR
+SF_FORM_008,Ted,Mosby,Data Analyst,tedmosby@mosbiudesigns.com,Mosbius Designs,1 - 20 employees,595-555-012,Marketing Technology,Australia,,STATE_ERROR
