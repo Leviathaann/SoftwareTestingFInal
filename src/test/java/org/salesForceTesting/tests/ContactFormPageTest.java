@@ -19,6 +19,8 @@ import java.util.List;
  *  testInvalidPhoneNumberFormat
  *  testInvalidEmployeeDropdown
  */
+
+
 @Listeners(ScreenshotListener.class)
 public class ContactFormPageTest extends BaseTestCore {
 
@@ -143,13 +145,11 @@ public class ContactFormPageTest extends BaseTestCore {
         contactFormPage.submitForm();
 
         // Verify the success message
-        Assert.assertTrue(
-                contactFormPage.isSuccessMessageDisplayed(), "Success message should be displayed for there to be a valid submission!"
-        );
+        Assert.assertTrue(contactFormPage.isSuccessMessageDisplayed(), "Success message should be displayed for there to be a valid submission!");
+        
         String successText = contactFormPage.getSuccessMessageText();
-        Assert.assertEquals(
-                successText, "Thank you. We'll be in touch soon.", "Success message text is not right!"
-        );
+
+        Assert.assertEquals(successText, "Thank you. We'll be in touch soon.", "Success message text is not right!");
 
 
     }
@@ -172,7 +172,6 @@ public class ContactFormPageTest extends BaseTestCore {
             // go to the contact page
             contactFormPage.navigateToContactPage();
 
-
             System.out.println("Testing invalid email format: " + invalidEmail);
             contactFormPage.setFirstName("Jack");
             contactFormPage.setLastName("Ellis");
@@ -192,17 +191,14 @@ public class ContactFormPageTest extends BaseTestCore {
             /* First check if the error message is displayed, then check if the error message is correct
              * The error message should contain the word "valid" or "email" to make sure that we know the email format is the issue
              */
-            Assert.assertTrue(contactFormPage.isEmailErrorDisplayed(),
-                    "An email error should be displayed showing there is an invalid format entered: " +
-                            invalidEmail);
+            Assert.assertTrue(contactFormPage.isEmailErrorDisplayed(),"An email error should be displayed showing there is an invalid format entered: " + invalidEmail);
 
 
             // Get error message
             String emailError = contactFormPage.getEmailErrorMessage();
 
             // Check if the error message contains the word "valid" or "email"
-            Assert.assertTrue(emailError.contains("valid") || emailError.contains("email"),
-                    "The email error message should show an invalid format for: " + invalidEmail);
+            Assert.assertTrue(emailError.contains("valid") || emailError.contains("email"), "The email error message should show an invalid format for: " + invalidEmail);
         }
     }
 
@@ -210,12 +206,12 @@ public class ContactFormPageTest extends BaseTestCore {
     @Test
     public void testInvalidPhoneNumberFormat() {
         // List of invalid phone number formats to test
-        List<String> invalidPhoneNumbers = new ArrayList<>();
+        List<String> invalidPhoneNumbers = new ArrayList<>(); 
         invalidPhoneNumbers.add("abcdef");
         invalidPhoneNumbers.add("402");
         invalidPhoneNumbers.add("123-456");
-        invalidPhoneNumbers.add("123-456-525-2502-5252");
         invalidPhoneNumbers.add("490-abc-1234");
+        invalidPhoneNumbers.add("123-456-525-2502-5252");
         invalidPhoneNumbers.add("(123)");
         invalidPhoneNumbers.add("[4024124851]");
 

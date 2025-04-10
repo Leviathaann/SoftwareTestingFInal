@@ -158,49 +158,40 @@ public class ContactFormPage {
     public void selectState(String state) {
         if (state != null && !state.isEmpty()) {
             try {
-                // Wait for the state dropdown element to be present and clickable
+                // Wait for the state field to be clickable
                 WebElement stateElement = wait.until(ExpectedConditions.elementToBeClickable(stateField));
 
-                // Check if it's actually a select element before proceeding
+                // Check if the state field is a dropdown
                 if (!"select".equalsIgnoreCase(stateElement.getTagName())) {
-                    System.err.println("State field (name=" + stateField + ") is not a <select> element. Found: <" +
-                            stateElement.getTagName() + ">. Cannot select state: " + state);
+                    System.err.println("State field (name=" + stateField + ") is not a dropdown. Found: <" + stateElement.getTagName() + ">. Cannot select state: " + state);
                     Assert.fail("State field is not a dropdown. Cannot select state: " + state);
                     return;
                 }
 
+                // Select the state
                 Select stateDropdown = new Select(stateElement);
                 stateDropdown.selectByVisibleText(state);
-                System.out.println("Selected state: " + state); // Log success
+                System.out.println("Selected state: " + state);
             } catch (TimeoutException e) {
-                System.err.println("State dropdown (name=" + stateField + ") did not become clickable: " + e.getMessage());
+                System.err.println(
+                        "State dropdown (name=" + stateField + ") did not become clickable: " + e.getMessage());
                 Assert.fail("State dropdown failed to load or become interactable for state: " + state, e);
             } catch (NoSuchElementException e) {
                 System.err.println(
-                        "State option '" + state + "' not found in dropdown (name=" + stateField + "): " + e.getMessage());
+                        "State option '" + state + "' not found in dropdown (name=" + stateField + "): "
+                                + e.getMessage());
                 Assert.fail("State option '" + state + "' not found.", e);
-            } catch (Exception e) {
-                System.err.println("Error selecting state '" + state + "' (name=" + stateField + "): " + e.getMessage());
-                Assert.fail("Failed to select state: " + state, e);
             }
         } else if (state != null) {
-            System.out.println("State value provided is empty string, skipping selection.");
+            System.out.println("State value is null, skipping to the submit button.");
+        }else{
+            System.out.println("There was no value for state the field, skipping.");
         }
+
     }
 
     // filling out the form
-    public void fillOutForm(
-            String firstName,
-            String lastName,
-            String email,
-            String company,
-            String phone,
-            String jobTitle,
-            String employees,
-            String productInterest,
-            String country,
-            String state
-    ) {
+    public void fillOutForm(String firstName, String lastName, String email, String company, String phone, String jobTitle, String employees, String productInterest, String country, String state) {
         setFirstName(firstName);
         setLastName(lastName);
         setJobTitle(jobTitle);
@@ -217,10 +208,9 @@ public class ContactFormPage {
                 selectState(state);
             } catch (TimeoutException e) {
                 System.err.println(
-                        "State field (name=" + stateField + ") did not become present after setting country. " +
-                                "Cannot set state: " + state);
-                if (country != null && (country.equals("United States") || country.equals("Canada"))) { // Example check
-                    Assert.fail("State field required for country '" + country + "' did not appear.", e);
+                        "State field name=" + stateField + " did not show up after setting the country. " +  "Can't set state: " + state);
+                if (country != null && country.equals("United States")) { 
+                    Assert.fail("State field is required for the United States " + e);
                 }
             }
         } else {
@@ -228,14 +218,14 @@ public class ContactFormPage {
         }
     }
 
-    // Submit the form
+    
+    // This method basically clicks the submit button.
+    // If the button is not clickable, the method will try to click the button again.
     public void submitForm() {
         try {
-            wait.until(ExpectedConditions.elementToBeClickable(submitButton))
-                    .click();
+            wait.until(ExpectedConditions.elementToBeClickable(submitButton)).click();
         } catch (Exception e) {
             System.err.println("Could not click submit button: " + e.getMessage());
-            // Fallback or re-throw if needed
             driver.findElement(submitButton).click();
         }
     }

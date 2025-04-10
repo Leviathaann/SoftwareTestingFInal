@@ -37,25 +37,25 @@ public class ScreenshotListener implements ITestListener {
 
                 /*
                  * Create the directory if it doesn't exist already
-                 * The screenshots will be saved in the /src/screenshots directory
+                 * The screenshots will be saved to /test-output/screenshots 
                  */
                 File directory = new File(screenshotDir);
                 if (!directory.exists()) {
                     directory.mkdirs();
                 }
 
-                // Take screenshot
+                // Try to take screenshot and save it to the screenshot directory
                 File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
                 FileUtils.copyFile(scrFile, new File(screenshotPath));
                 String relativePath = "screenshots" + File.separator + screenshotName;
                 Reporter.log("Screenshot captured: <a href='" + relativePath + "'> " + screenshotName + "</a><br>");
 
             } catch (IOException e) {
-                Reporter.log("Failed to capture screenshot for " + testMethodName + ": " + e.getMessage());
+                Reporter.log("Failed to capture a screenshot for " + testMethodName + ": " + e.getMessage());
                 e.printStackTrace();
             }
         } else {
-            Reporter.log("Could not capture screenshot: WebDriver instance was null.");
+            Reporter.log("Could not capture a screenshot as the WebDriver instance is equal to null.");
         }
     }
 
