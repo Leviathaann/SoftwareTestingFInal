@@ -8,10 +8,17 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.salesForceTesting.testUtils.ScreenshotListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * TEST CASES:
+ *  testContactFormValidation
+ *  testValidFormSubmission
+ *  testInvalidEmailFormat
+ *  testInvalidPhoneNumberFormat
+ *  testInvalidEmployeeDropdown
+ */
 @Listeners(ScreenshotListener.class)
 public class ContactFormPageTest extends BaseTestCore {
 
@@ -23,11 +30,14 @@ public class ContactFormPageTest extends BaseTestCore {
         contactFormPage.navigateToContactPage();
     }
 
+    /* This is the data driven test for the contact form
+       It will go through the CSV file and test each row
+       The CSV file is formatted in the follwing way:
+       testCaseId, firstName, lastName, jobTitle, email, company, employeesNumber, phone, productInterest, country, state, expectedResult
+    */
     @Test(dataProvider = "ContactFormData", dataProviderClass = ContactFormDataProvider.class)
-    public void testContactFormValidation(String testCaseId, String firstName, String lastName,
-                                          String jobTitle, String email, String company,
-                                          String employeesNumber, String phone, String productInterest,
-                                          String country, String state, String expectedResult) {
+    public void testContactFormValidation(String testCaseId, String firstName, String lastName, String jobTitle, String email, String company,
+                                          String employeesNumber, String phone, String productInterest, String country, String state, String expectedResult) {
 
         // Log the test case being executed
         System.out.println("Executing test case: " + testCaseId);
@@ -39,10 +49,9 @@ public class ContactFormPageTest extends BaseTestCore {
         // Submit the form
         contactFormPage.submitForm();
 
-        // Verify results based on expected outcome
+        // This will go through the expected results and check if the form is displayed correctly
         switch (expectedResult) {
             case "SUCCESS":
-                // *** ADDED Assertions for SUCCESS case ***
                 Assert.assertTrue(
                         contactFormPage.isSuccessMessageDisplayed(), "Success message should be displayed for test case: " + testCaseId);
                 String successText = contactFormPage.getSuccessMessageText();
@@ -122,9 +131,9 @@ public class ContactFormPageTest extends BaseTestCore {
         contactFormPage.setJobTitle("Accountant");
         contactFormPage.setEmail("jamesSmith@example.com");
         contactFormPage.setCompany("BlackRock");
-        contactFormPage.setEmployees("201 - 10000 employees");
+        contactFormPage.setEmployees("201 - 10,000 employees");
         contactFormPage.setPhone("07402182492");
-        contactFormPage.setProductInterest("Artificial Intelligence");
+        contactFormPage.setProductInterest("Professional Services");
         contactFormPage.setCountry("United States");
         if (contactFormPage.isStateFieldVisible()) {
             contactFormPage.selectState("Alabama");
@@ -160,6 +169,10 @@ public class ContactFormPageTest extends BaseTestCore {
 
         // This will go through the list of invalid email formats and test each one
         for (String invalidEmail : invalidEmailFormats){
+            // go to the contact page
+            contactFormPage.navigateToContactPage();
+
+
             System.out.println("Testing invalid email format: " + invalidEmail);
             contactFormPage.setFirstName("Jack");
             contactFormPage.setLastName("Ellis");
@@ -167,9 +180,9 @@ public class ContactFormPageTest extends BaseTestCore {
            // Setting the email to an invalid one
             contactFormPage.setEmail(invalidEmail);
             contactFormPage.setCompany("Liberty IT");
-            contactFormPage.setEmployees("201 - 10000 employees");
+            contactFormPage.setEmployees("201 - 10,000 employees");
             contactFormPage.setPhone("07124045248");
-            contactFormPage.setProductInterest("Artificial Intelligence");
+            contactFormPage.setProductInterest("Team Productivity");
             if (contactFormPage.isStateFieldVisible()) {
                 contactFormPage.selectState("Boston");
             }
@@ -192,4 +205,58 @@ public class ContactFormPageTest extends BaseTestCore {
                     "The email error message should show an invalid format for: " + invalidEmail);
         }
     }
+
+    // Test case for phone number format validation (will follow a similar style to email format validation)
+    @Test
+    public void testInvalidPhoneNumberFormat() {
+        // List of invalid phone number formats to test
+        List<String> invalidPhoneNumbers = new ArrayList<>();
+        invalidPhoneNumbers.add("abcdef");
+        invalidPhoneNumbers.add("402");
+        invalidPhoneNumbers.add("123-456");
+        invalidPhoneNumbers.add("123-456-525-2502-5252");
+        invalidPhoneNumbers.add("490-abc-1234");
+        invalidPhoneNumbers.add("(123)");
+        invalidPhoneNumbers.add("[4024124851]");
+
+
+        // This will go through the list of invalid phoneNumber formats and test each one
+        for (String invalidPhone : invalidPhoneNumbers) {
+            // go to the contact page
+            contactFormPage.navigateToContactPage();
+
+            contactFormPage.setFirstName("Erin");
+            contactFormPage.setLastName("keen");
+            contactFormPage.setJobTitle("Product Manager");
+            contactFormPage.setEmail("ekeen@gmail.com");
+            contactFormPage.setCompany("Salesforce");
+            contactFormPage.setEmployees("10,001+ employees");
+            // Setting the phone number to an invalid one
+            contactFormPage.setPhone(invalidPhone);
+            contactFormPage.setProductInterest("Net Zero Software");
+            contactFormPage.setCountry("Togo");
+
+            // submit form
+            contactFormPage.submitForm();
+
+            // Verify phone error is displayed
+            Assert.assertTrue(contactFormPage.isPhoneErrorDisplayed(),
+                    "Phone error should be displayed for invalid format: " + invalidPhone);
+
+            // Verify error message mentions valid phone or format
+            String errorMessage = contactFormPage.getPhoneErrorMessage();
+            Assert.assertTrue(
+                    errorMessage != null && (errorMessage.contains("phone") || errorMessage.contains("number")
+                            || errorMessage.contains("format")), "Phone error message should mention valid format for: " +
+                            invalidPhone + " but got message: " + errorMessage);
+
+            System.out.println("Successfully validated error for phone format: " + invalidPhone);
+        }
+    }
+
+    // Test case for employee dropdown validation
+
+   
+
+
 }
