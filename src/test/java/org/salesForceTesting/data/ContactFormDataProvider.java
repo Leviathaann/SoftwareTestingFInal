@@ -19,7 +19,7 @@ public class ContactFormDataProvider {
 
             // path to the csv file
             String csvFilePath = "src/test/resources/ContactFormData.csv";
-            
+
             // read the csv file
             Reader in = new FileReader(csvFilePath);
             System.out.println("Successfully opened CSV file");
@@ -29,11 +29,8 @@ public class ContactFormDataProvider {
                     .withIgnoreHeaderCase().withTrim().parse(in);
 
             List<Object[]> testData = new ArrayList<>();
-            int rowCount = 0;
-
             // Go through each row in the csv file and add it to the test data array list
             for (CSVRecord field : fields) {
-                rowCount++;
                 try {
                     String testCaseId = field.get("testCaseId");
                     String firstName = field.get("firstName").isEmpty() ? null : field.get("firstName");
@@ -50,29 +47,19 @@ public class ContactFormDataProvider {
 
                     Object[] collectedData = {testCaseId, firstName, lastName, jobTitle, email, company, employeesNumber, phone, productInterest, country, state, expectedResult};
                     testData.add(collectedData);
-                    
-                    // For debugging
-                    System.out.println("Reading CSV row " + rowCount + ": " + testCaseId + 
-                                      ", firstName=" + firstName + 
-                                      ", lastName=" + lastName + 
-                                      ", employeesNumber=" + employeesNumber +
-                                      ", expectedResult=" + expectedResult);
+
                 } catch (Exception e) {
-                    System.err.println("Error processing row " + rowCount + ": " + e.getMessage());
-                    e.printStackTrace();
+                    System.out.println("error reading row from the csv file: " + e.getMessage());
                 }
             }
 
-            System.out.println("Successfully read " + rowCount + " rows from CSV");
             return testData.toArray(new Object[0][]);
 
         } catch (Exception e) {
             System.err.println("Error reading CSV file: " + e.getMessage());
-            e.printStackTrace();
-            return new Object[0][0]; // Return empty array instead of partially initialized one
+            // just return a empty array if there is an error
+            return new Object[0][0];
         }
     }
 }
-
-
 

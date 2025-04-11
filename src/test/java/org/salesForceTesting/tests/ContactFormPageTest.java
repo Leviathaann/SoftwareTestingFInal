@@ -104,7 +104,7 @@ public class ContactFormPageTest extends BaseTestCore {
                 Assert.assertTrue(contactFormPage.isStateErrorDisplayed(), "State error should be displayed: " + testCaseId);
                 break;
             default:
-                Assert.fail("Unknown expected result: " + expectedResult + " for test case: " + testCaseId);
+                Assert.fail(expectedResult + " is unknown, expected result for:" + testCaseId);
         }
     }
 

@@ -33,6 +33,17 @@ public class BaseTestCore {
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
         }
 
+        /*  Use firefox driver instead of chrome driver
+    @BeforeMethod
+    public void setUpFirefoxDriver() {
+        WebDriverManager.firefoxdriver().setup();
+        System.setProperty("webdriver.firefox.driver", "/usr/bin/geckodriver");
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+    }
+     */
+
         @AfterMethod
         public void tearDown() {
             if (driver != null) {

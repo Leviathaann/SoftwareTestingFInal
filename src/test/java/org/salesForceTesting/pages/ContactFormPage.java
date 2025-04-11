@@ -63,7 +63,6 @@ public class ContactFormPage extends BaseTestCore {
     }
 
     private void handleAcceptCookies() {
-        try {
             WebDriverWait cookieTimeWait = new WebDriverWait(driver, Duration.ofSeconds(5));
             By acceptButtonLocator = By.id("onetrust-accept-btn-handler");
 
@@ -71,10 +70,6 @@ public class ContactFormPage extends BaseTestCore {
             acceptButton.click();
 
             cookieTimeWait.until(ExpectedConditions.invisibilityOfElementLocated(acceptButtonLocator));
-            System.out.println("'Accept All Cookies' button disappeared.");
-        } catch (Exception e) {
-            System.err.println("An unexpected error occurred while handling cookie consent: " + e.getMessage());
-        }
     }
 
 
@@ -224,7 +219,7 @@ public class ContactFormPage extends BaseTestCore {
                 }
             }
         } else {
-            System.out.println("There was no state provided or it was not required, skipping this selection.");
+            System.out.println("There was no state provided or it was not required, skipping this selection");
         }
     }
 
